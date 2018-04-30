@@ -43,9 +43,8 @@ The following lines will:
 - add the plugin to the `karaf` `startup.properties`.
 ```shell
 mkdir -p /opt/sonatype/nexus/system/fr/auchan/ &&\
-wget -O /opt/sonatype/nexus/system/fr/auchan/nexus3-gitlabauth-plugin.zip https://github.com/auchanretailfrance/nexus3-gitlabauth-plugin/releases/download/2.0.1/nexus3-gitlabauth-plugin.zip &&\
-unzip /opt/sonatype/nexus/system/fr/auchan/nexus3-gitlabauth-plugin.zip -d /opt/sonatype/nexus/system/fr/auchan/ &&\
-echo "mvn\:fr.auchan/nexus3-gitlabauth-plugin/2.0.1 = 200" >> /opt/sonatype/nexus/etc/karaf/startup.properties
+wget -O /opt/sonatype/nexus/system/fr/auchan/nexus3-gitlabauth-plugin-1.1.0.jar https://github.com/auchanretailfrance/nexus3-gitlabauth-plugin/releases/download/1.1.0/nexus3-gitlabauth-plugin-1.1.0.jar &&\
+echo "mvn\:fr.auchan/nexus3-gitlabauth-plugin/1.1.0 = 200" >> /opt/sonatype/nexus/etc/karaf/startup.properties
 ```
 
 #### 2. Create configuration
