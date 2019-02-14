@@ -85,7 +85,7 @@ public class GitlabApiClient {
         }
 
         if (gitlabUser==null || !loginName.equals(gitlabUser.getEmail())) {
-            throw new GitlabAuthenticationException("Given username not found or does not match Github Username!");
+            throw new GitlabAuthenticationException("Given username not found or does not match GitLab Username!");
         }
 
         GitlabPrincipal principal = new GitlabPrincipal();

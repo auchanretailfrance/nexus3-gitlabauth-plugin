@@ -52,7 +52,7 @@ Create `/opt/sonatype/nexus/etc/gitlabauth.properties`
 
 Within the file you can configure the following properties:
 
-|Property        |Description                              |[Default](https://github.com/larscheid-schmitzhermes/nexus3-gitlabauth-plugin/blob/master/src/main/java/fr/auchan/nexus3/github/oauth/plugin/configuration/GithubOauthConfiguration.java)|
+|Property        |Description                              |[Default](https://github.com/auchanretailfrance/nexus3-gitlabauth-plugin/blob/master/src/main/java/fr/auchan/nexus3/gitlabauth/plugin/config/GitlabAuthConfiguration.java)|
 |---             |---                                      |---    |
 |`gitlab.api.url`|URL of the Gitlab API to operate against.|`https://gitlab.com`|
 |`gitlab.api.key`|An admin sudo API key to list groups of users.|

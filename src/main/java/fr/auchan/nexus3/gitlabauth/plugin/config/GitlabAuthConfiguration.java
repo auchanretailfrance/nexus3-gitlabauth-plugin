@@ -27,7 +27,7 @@ public class GitlabAuthConfiguration {
 
     private static final String GITLAB_SUDO_API_KEY_KEY = "gitlab.api.key";
 
-    private static final String GITLAB_PRINCIPAL_CACHE_TTL_KEY = "github.principal.cache.ttl";
+    private static final String GITLAB_PRINCIPAL_CACHE_TTL_KEY = "gitlab.principal.cache.ttl";
     
     private static final Logger LOGGER = LoggerFactory.getLogger(GitlabAuthConfiguration.class);
 
@@ -40,7 +40,7 @@ public class GitlabAuthConfiguration {
         try {
             configuration.load(Files.newInputStream(Paths.get(".", "etc", CONFIG_FILE)));
         } catch (IOException e) {
-            LOGGER.warn("Error reading github oauth properties, falling back to default configuration", e);
+            LOGGER.warn("Error reading GitLab oauth properties, falling back to default configuration", e);
         }
     }
 
