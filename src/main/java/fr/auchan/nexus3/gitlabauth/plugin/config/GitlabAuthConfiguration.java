@@ -53,7 +53,7 @@ public class GitlabAuthConfiguration {
     }
 
     public Boolean getGitlabIgnoreCertificateErrors() {
-+       return configuration.getProperty(GITLAB_IGNORE_CERTIFICATE_ERRORS, DEFAULT_IGNORE_CERTIFICATE_ERRORS).equals("true");
+        return configuration.getProperty(GITLAB_IGNORE_CERTIFICATE_ERRORS, DEFAULT_IGNORE_CERTIFICATE_ERRORS).equals("true");
      }
 
     public String getGitlabApiKey() {
