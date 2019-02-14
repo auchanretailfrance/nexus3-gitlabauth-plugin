@@ -50,6 +50,7 @@ public class GitlabApiClient {
     @PostConstruct
     public void init() {
         client = GitlabAPI.connect(configuration.getGitlabApiUrl(), configuration.getGitlabApiKey());
+        client.ignoreCertificateErrors(configuration.getGitlabIgnoreCertificateErrors());
         initPrincipalCache();
     }
 
@@ -79,6 +80,7 @@ public class GitlabApiClient {
         List<GitlabGroup> groups = null;
         try {
             GitlabAPI gitlabAPI = GitlabAPI.connect(configuration.getGitlabApiUrl(), String.valueOf(token));
+            gitlabAPI.ignoreCertificateErrors(configuration.getGitlabIgnoreCertificateErrors());
             gitlabUser = gitlabAPI.getUser();
         } catch (Exception e) {
             throw new GitlabAuthenticationException(e);

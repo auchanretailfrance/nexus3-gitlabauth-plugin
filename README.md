@@ -43,8 +43,8 @@ The following lines will:
 - add the plugin to the `karaf` `startup.properties`.
 ```shell
 mkdir -p /opt/sonatype/nexus/system/fr/auchan/ &&\
-wget -O /opt/sonatype/nexus/system/fr/auchan/nexus3-gitlabauth-plugin-1.1.0.jar https://github.com/auchanretailfrance/nexus3-gitlabauth-plugin/releases/download/1.1.0/nexus3-gitlabauth-plugin-1.1.0.jar &&\
-echo "mvn\:fr.auchan/nexus3-gitlabauth-plugin/1.1.0 = 200" >> /opt/sonatype/nexus/etc/karaf/startup.properties
+wget -O /opt/sonatype/nexus/system/fr/auchan/nexus3-gitlabauth-plugin-1.1.1.jar https://github.com/auchanretailfrance/nexus3-gitlabauth-plugin/releases/download/1.1.1/nexus3-gitlabauth-plugin-1.1.1.jar &&\
+echo "mvn\:fr.auchan/nexus3-gitlabauth-plugin/1.1.1 = 200" >> /opt/sonatype/nexus/etc/karaf/startup.properties
 ```
 
 #### 2. Create configuration
@@ -55,12 +55,14 @@ Within the file you can configure the following properties:
 |Property        |Description                              |[Default](https://github.com/auchanretailfrance/nexus3-gitlabauth-plugin/blob/master/src/main/java/fr/auchan/nexus3/gitlabauth/plugin/config/GitlabAuthConfiguration.java)|
 |---             |---                                      |---    |
 |`gitlab.api.url`|URL of the Gitlab API to operate against.|`https://gitlab.com`|
+|`gitlab.api.certificate.ignore_errors`|Ignore certificate errors against `gitlab.api.url`.|`false`|
 |`gitlab.api.key`|An admin sudo API key to list groups of users.|
 |`gitlab.principal.cache.ttl`|[Java Duration](https://docs.oracle.com/javase/8/docs/api/java/time/Duration.html#parse-java.lang.CharSequence-) for how long a given Access will be cached for. This is a tradeoff of how quickly access can be revoked and how quickly a Gitlab API will be called!|`PT1M` (1 Minute)|----|
 
 This is what an example file would look like:
 ```properties
 gitlab.api.url=https://gitlab.com
+gitlab.api.certificate.ignore_errors=false
 gitlab.api.key=XXXXXXXXXXXXXXXXXXXXX
 gitlab.principal.cache.ttl=PT1M
 ```

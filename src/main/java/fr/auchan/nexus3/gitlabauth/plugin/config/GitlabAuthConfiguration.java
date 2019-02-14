@@ -23,7 +23,11 @@ public class GitlabAuthConfiguration {
 
     private static final String DEFAULT_GITLAB_URL = "https://gitlab.com";
 
+    private static final String DEFAULT_IGNORE_CERTIFICATE_ERRORS = "false";
+
     private static final String GITLAB_API_URL_KEY = "gitlab.api.url";
+
+    private static final String GITLAB_IGNORE_CERTIFICATE_ERRORS = "gitlab.api.certificate.ignore_errors";
 
     private static final String GITLAB_SUDO_API_KEY_KEY = "gitlab.api.key";
 
@@ -47,6 +51,10 @@ public class GitlabAuthConfiguration {
     public String getGitlabApiUrl() {
         return configuration.getProperty(GITLAB_API_URL_KEY, DEFAULT_GITLAB_URL);
     }
+
+    public Boolean getGitlabIgnoreCertificateErrors() {
++       return configuration.getProperty(GITLAB_IGNORE_CERTIFICATE_ERRORS, DEFAULT_IGNORE_CERTIFICATE_ERRORS).equals("true");
+     }
 
     public String getGitlabApiKey() {
         return configuration.getProperty(GITLAB_SUDO_API_KEY_KEY);
