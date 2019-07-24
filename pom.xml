@@ -9,12 +9,15 @@
     <parent>
         <groupId>org.sonatype.nexus.plugins</groupId>
         <artifactId>nexus-plugins</artifactId>
-        <version>3.10.0-04</version>
+        <version>3.17.0-01</version>
     </parent>
 
     <properties>
+        <java.version>1.8</java.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+
+        <java-gitlab-api.version>4.1.0</java-gitlab-api.version>
     </properties>
 
     <name>${project.groupId}:${project.artifactId}</name>
@@ -39,7 +42,7 @@
         <dependency>
             <groupId>org.gitlab</groupId>
             <artifactId>java-gitlab-api</artifactId>
-            <version>4.0.0</version>
+            <version>${java-gitlab-api.version}</version>
         </dependency>
     </dependencies>
 
@@ -49,8 +52,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                 </configuration>
             </plugin>
             <plugin>
