@@ -4,7 +4,7 @@ COPY . /build
 WORKDIR /build
 RUN mvn clean package
 
-FROM sonatype/nexus3:3.10.0
+FROM sonatype/nexus3:3.17.0
 USER root
 RUN mkdir -p /opt/sonatype/nexus/system/fr/auchan/nexus3-gitlabauth-plugin/1.1.0/
 COPY --from=builder /build/target/nexus3-gitlabauth-plugin-1.1.0.jar /opt/sonatype/nexus/system/fr/auchan/nexus3-gitlabauth-plugin/1.1.0/
