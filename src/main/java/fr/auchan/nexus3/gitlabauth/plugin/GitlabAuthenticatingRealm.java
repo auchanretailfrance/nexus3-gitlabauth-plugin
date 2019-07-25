@@ -20,7 +20,7 @@ import javax.inject.Singleton;
 
 @Singleton
 @Named
-@Description("Gitlab Authentication Realm")
+@Description("Gitlab Realm")
 public class GitlabAuthenticatingRealm extends AuthorizingRealm {
     private GitlabApiClient gitlabClient;
 
