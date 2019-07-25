@@ -16,6 +16,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -89,14 +90,27 @@ public class GitlabApiClient {
             throw new GitlabAuthenticationException(e);
         }
 
-        if (gitlabUser == null || !loginName.equals(gitlabUser.getEmail())) {
+        if (gitlabUser == null || !loginName.equalsIgnoreCase(gitlabUser.getEmail())) {
             throw new GitlabAuthenticationException("Given username not found or does not match Github Username!");
         }
 
         GitlabPrincipal principal = new GitlabPrincipal();
-
         principal.setUsername(gitlabUser.getEmail());
-        principal.setGroups(getGroups((gitlabUser.getUsername())));
+
+        Set<String> groups = new HashSet<>();
+        if (gitlabUser.isAdmin() && configuration.isGitlabAdminMappingEnabled()) {
+            groups.add("nx-admin");
+        }
+        if (configuration.getGitlabDefaultRole() != null && !configuration.getGitlabDefaultRole().isEmpty()) {
+            groups.add(configuration.getGitlabDefaultRole());
+        } else {
+            groups.addAll(getGroups((gitlabUser.getUsername())));
+        }
+
+        if (!groups.isEmpty()) {
+            principal.setGroups(groups);
+        }
+
         LOG.debug("doAuthz() returned: {}", principal);
         return principal;
     }
@@ -116,6 +130,4 @@ public class GitlabApiClient {
         LOG.debug("mapGitlabGroupToNexusRole() called  with: team = {}", team);
         return team.getPath();
     }
-
-
 }

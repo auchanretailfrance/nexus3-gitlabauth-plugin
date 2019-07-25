@@ -1,18 +1,15 @@
 package fr.auchan.nexus3.gitlabauth.plugin.config;
 
+import com.google.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Named;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
 import java.util.Properties;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Named;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.inject.Singleton;
 
 @Singleton
 @Named
@@ -28,7 +25,11 @@ public class GitlabAuthConfiguration {
     private static final String GITLAB_SUDO_API_KEY_KEY = "gitlab.api.key";
 
     private static final String GITLAB_PRINCIPAL_CACHE_TTL_KEY = "github.principal.cache.ttl";
-    
+
+    private static final String GITLAB_DEFAULT_ROLE = "gitlab.role.default";
+
+    private static final String GITLAB_ADMIN_MAPPING = "gitlab.role.admin.mapping.enabled";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(GitlabAuthConfiguration.class);
 
     private Properties configuration;
@@ -53,5 +54,13 @@ public class GitlabAuthConfiguration {
 
     public Duration getPrincipalCacheTtl() {
         return Duration.parse(configuration.getProperty(GITLAB_PRINCIPAL_CACHE_TTL_KEY, DEFAULT_PRINCIPAL_CACHE_TTL.toString()));
+    }
+
+    public String getGitlabDefaultRole() {
+        return configuration.getProperty(GITLAB_DEFAULT_ROLE);
+    }
+
+    public boolean isGitlabAdminMappingEnabled() {
+        return configuration.getProperty(GITLAB_ADMIN_MAPPING).equals("true");
     }
 }
