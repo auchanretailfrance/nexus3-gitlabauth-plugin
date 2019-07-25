@@ -33,8 +33,7 @@ public class GitlabAuthConfiguration {
 
     private Properties configuration;
 
-    @PostConstruct
-    public void init() {
+    public GitlabAuthConfiguration() {
         configuration = new Properties();
 
         try {
