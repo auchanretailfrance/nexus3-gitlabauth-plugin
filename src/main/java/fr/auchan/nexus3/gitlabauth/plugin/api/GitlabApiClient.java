@@ -11,6 +11,8 @@ import org.gitlab.api.models.GitlabGroup;
 import org.gitlab.api.models.GitlabUser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sonatype.nexus.security.Roles;
+import org.sonatype.nexus.security.SecurityApi;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -29,6 +31,7 @@ public class GitlabApiClient {
 
     private GitlabAPI client;
     private GitlabAuthConfiguration configuration;
+    private SecurityApi securityApi;
     // Cache token lookups to reduce the load on Github's User API to prevent hitting the rate limit.
     private Cache<String, GitlabPrincipal> tokenToPrincipalCache;
 
@@ -45,9 +48,10 @@ public class GitlabApiClient {
     }
 
     @Inject
-    public GitlabApiClient(GitlabAuthConfiguration configuration) {
+    public GitlabApiClient(GitlabAuthConfiguration configuration, SecurityApi securityApi) {
         LOG.debug("GitlabApiClient() called  with: configuration = {}", configuration);
         this.configuration = configuration;
+        this.securityApi = securityApi;
         init();
     }
 
@@ -73,15 +77,15 @@ public class GitlabApiClient {
             LOG.debug("authz() returned: {}", cached);
             return cached;
         } else {
-            GitlabPrincipal principal = doAuthz(login, token);
+            GitlabPrincipal principal = doAuthz(getGitlabUser(login, token));
             tokenToPrincipalCache.put(cacheKey, principal);
             LOG.debug("authz() returned: {}", principal);
             return principal;
         }
     }
 
-    private GitlabPrincipal doAuthz(String loginName, char[] token) throws GitlabAuthenticationException {
-        LOG.debug("doAuthz() called  with: loginName = {}, token = {}", loginName, token);
+    private GitlabUser getGitlabUser(String loginName, char[] token) throws GitlabAuthenticationException {
+        LOG.debug("getGitlabUser() called  with: loginName = {}, token = {}", loginName, token);
         GitlabUser gitlabUser;
         try {
             GitlabAPI gitlabAPI = GitlabAPI.connect(configuration.getGitlabApiUrl(), String.valueOf(token));
@@ -90,29 +94,46 @@ public class GitlabApiClient {
             throw new GitlabAuthenticationException(e);
         }
 
-        if (gitlabUser == null || !loginName.equalsIgnoreCase(gitlabUser.getEmail())) {
+        if (gitlabUser == null || !loginName.equals(gitlabUser.getEmail())) {
             throw new GitlabAuthenticationException("Given username not found or does not match Github Username!");
         }
+        return gitlabUser;
+    }
+
+    private GitlabPrincipal doAuthz(GitlabUser gitlabUser) throws GitlabAuthenticationException {
+        LOG.debug("doAuthz() called  with: gitlabUser = {}", gitlabUser);
 
         GitlabPrincipal principal = new GitlabPrincipal();
         principal.setUsername(gitlabUser.getEmail());
 
-        Set<String> groups = new HashSet<>();
-        if (gitlabUser.isAdmin() && configuration.isGitlabAdminMappingEnabled()) {
-            groups.add("nx-admin");
-        }
-        if (configuration.getGitlabDefaultRole() != null && !configuration.getGitlabDefaultRole().isEmpty()) {
-            groups.add(configuration.getGitlabDefaultRole());
-        } else {
-            groups.addAll(getGroups((gitlabUser.getUsername())));
+        Set<String> assignableRoles = getAssignableRoles(gitlabUser);
+        if (!assignableRoles.isEmpty()) {
+            principal.setGroups(assignableRoles);
         }
 
-        if (!groups.isEmpty()) {
-            principal.setGroups(groups);
+        if (securityApi != null) {
+            createNexusUser(gitlabUser);
         }
 
         LOG.debug("doAuthz() returned: {}", principal);
         return principal;
+    }
+
+    private void createNexusUser(GitlabUser gitlabUser) {
+
+    }
+
+    private Set<String> getAssignableRoles(GitlabUser gitlabUser) throws GitlabAuthenticationException {
+        Set<String> roles = new HashSet<>();
+        if (gitlabUser.isAdmin() && configuration.isGitlabAdminMappingEnabled()) {
+            roles.add(Roles.ADMIN_ROLE_ID);
+        }
+        if (configuration.getGitlabDefaultRole() != null && !configuration.getGitlabDefaultRole().isEmpty()) {
+            roles.add(configuration.getGitlabDefaultRole());
+        } else {
+            roles.addAll(getGroups((gitlabUser.getUsername())));
+        }
+        return roles;
     }
 
     private Set<String> getGroups(String username) throws GitlabAuthenticationException {
